@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siddx | UPI Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0c;
+            --card-bg: rgba(18, 18, 22, 0.75);
+            --accent-gold: #ffb703;
+            --accent-glow: rgba(255, 183, 3, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Canvas Background */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism Container */
+        .card-container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 420px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 183, 3, 0.2);
+            border-radius: 28px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8),
+                        0 0 30px var(--accent-glow);
+            text-align: center;
+            transform-style: preserve-3d;
+            animation: floatIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes floatIn {
+            0% { opacity: 0; transform: translateY(40px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .header-tag {
+            font-family: 'Permanent Marker', cursive;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            transform: rotate(-3deg);
+            margin-bottom: 4px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 30%, var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Animated QR Frame */
+        .qr-wrapper {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            margin: 0 auto 24px;
+            padding: 12px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 0 25px var(--accent-glow);
+            overflow: hidden;
+        }
+
+        .qr-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        /* Laser Scan Line Animation */
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            box-shadow: 0 0 15px var(--accent-gold);
+            animation: scan 2.5s ease-in-out infinite;
+        }
+
+        @keyframes scan {
+            0%, 100% { top: 0%; opacity: 0; }
+            50% { top: 96%; opacity: 1; }
+        }
+
+        /* Copy Button Box */
+        .upi-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed rgba(255, 183, 3, 0.4);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upi-box:hover {
+            border-color: var(--accent-gold);
+            background: rgba(255, 183, 3, 0.05);
+        }
+
+        .upi-text {
+            font-family: monospace;
+            font-size: 1rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: transform 0.2s ease;
+        }
+
+        .upi-box:active .copy-btn {
+            transform: scale(0.95);
+        }
+
+        /* Features Footer */
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles"></canvas>
+
+    <div class="card-container" id="card">
+        <span class="header-tag">Small Payments, Big Support ♡</span>
+        <h1>Siddx</h1>
+        
+        <div class="badge-container">
+            <span class="badge">✦ FamX</span>
+            <span class="badge">🏛 Bank</span>
+        </div>
+
+        <div class="qr-wrapper">
+            <div class="scanner-line"></div>
+            <!-- Replace src below with the hosted URL of your QR image if uploading online -->
+            <img src="1000100731.jpg" alt="UPI QR Code">
+        </div>
+
+        <div class="upi-box" onclick="copyUPI()">
+            <span class="upi-text" id="upi-id">siddxverma@fam</span>
+            <button class="copy-btn" id="copy-btn">Copy</button>
+        </div>
+
+        <div class="features">
+            <div class="feature-item">
+                <span>⚡ Fast & Secure</span>
+            </div>
+            <div class="feature-item">
+                <span>🛡 100% Safe</span>
+            </div>
+            <div class="feature-item">
+                <span>❤️ Thank You</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Copy UPI ID logic
+        function copyUPI() {
+            const upiText = document.getElementById('upi-id').innerText;
+            navigator.clipboard.writeText(upiText);
+            const btn = document.getElementById('copy-btn');
+            btn.innerText = 'Copied!';
+            btn.style.background = '#4CAF50';
+            btn.style.color = '#fff';
+            setTimeout(() => {
+                btn.innerText = 'Copy';
+                btn.style.background = 'var(--accent-gold)';
+                btn.style.color = '#000';
+            }, 2000);
+        }
+
+        // Floating Gold Particles Effect
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * -0.5 - 0.2;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 183, 3, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < 50; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlesArray.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // 3D Card Tilt Effect on Desktop
+        const card = document.getElementById('card');
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth > 768) {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            }
+        });
+    </script>
+</body>
+</html>
